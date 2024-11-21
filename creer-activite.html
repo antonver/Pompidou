@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Créer une activité</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+  <h1>Créer une activité</h1>
+  
+  <h3>
+  <form id="createActivityForm">
+    <label for="mailOrganisateur">Mail de l'organisateur :</label>
+    <input type="email" id="mailOrganisateur" name="mail" placeholder="Ex : exemple@mail.com" required>
+  </br></br>
+
+    <label for="type">Type d'activité :</label>
+    <select id="type" name="type">
+      <option value="">-- Sélectionnez un type --</option>
+      <!-- Options dynamiques ajoutées ici -->
+    </select>
+</br></br>
+    <label for="nouveauType">Créer un nouveau type d'activité :</label>
+    <input type="text" id="nouveauType" name="nouveauType" placeholder="Nouveau type d'activité">
+</br></br>
+    <label for="commune">Commune :</label>
+    <input type="text" id="commune" name="commune" placeholder="Ex : Paris" required>
+</br></br>
+    <label for="descriptif">Descriptif :</label>
+    <input type="text" id="descriptif" name="descriptif" placeholder="Description de l'activité" required>
+</br></br>
+    <label for="date">Date :</label>
+    <input type="text" id="date" name="date" placeholder="Sélectionnez une date" required>
+</br></br>
+    <button type="submit">Créer l'activité</button>
+  </form>
+</br>
+</h3>
+  <script>
+    // Charger les types d'activités dans la liste déroulante
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('/api/types') // Récupère les types depuis l'API
+        .then(response => response.json())
+        .then(data => {
+          const select = document.getElementById('typeActivite');
+          data.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type.typeActivite;
+            option.textContent = `${type.typeActivite} (${type.activiteGenerique || 'Général'})`;
+            select.appendChild(option);
+          });
+        });
+
+      // Activer le calendrier pour le champ "Date"
+      flatpickr('#date', {
+        dateFormat: 'Ymd',
+        locale: 'fr',
+      });
+    });
+
+    // Gestion du formulaire pour envoyer les données à l'API
+    document.getElementById('createActivityForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const formData = {
+        mailOrganisateur: document.getElementById('mailOrganisateur').value,
+        typeActivite: document.getElementById('typeActivite').value,
+        commune: document.getElementById('commune').value,
+        descriptif: document.getElementById('descriptif').value,
+        date: document.getElementById('date').value,
+      };
+
+      fetch('/api/activites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erreur lors de la création de l\'activité.');
+          }
+          return response.json();
+        })
+        .then(data => {
+          alert(data.message); // Affiche un message de succès
+          document.getElementById('createActivityForm').reset(); // Réinitialise le formulaire
+        })
+        .catch(error => {
+          alert(error.message); // Affiche un message d'erreur
+        });
+    });
+  </script>
+</body>
+</html>
