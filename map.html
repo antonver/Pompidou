@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte avec Leaflet</title>
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- JavaScript de Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        /* Donne une taille à la carte */
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Carte interactive avec Leaflet</h1>
+    <!-- Conteneur de la carte -->
+    <div id="map"></div>
+
+    <script>
+        // Initialisation de la carte
+        const map = L.map('map').setView([48.8566, 2.3522], 13); // Coordonnées de Paris, zoom 13
+
+        // Ajout des tuiles OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+
+        // Ajout d'un marqueur sur la carte
+        const marker = L.marker([48.8566, 2.3522]).addTo(map);
+
+        // Ajout d'une info-bulle au marqueur
+        marker.bindPopup("<b>Paris</b><br>C'est ici !").openPopup();
+
+        // Ajout d'un cercle sur la carte
+        const circle = L.circle([48.8566, 2.3522], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 500
+        }).addTo(map);
+
+        // Ajout d'un polygone sur la carte
+        const polygon = L.polygon([
+            [48.858844, 2.294351],
+            [48.860059, 2.292292],
+            [48.861296, 2.294514]
+        ]).addTo(map);
+
+        // Ajout d'une popup au clic
+        map.on('click', function (e) {
+            L.popup()
+                .setLatLng(e.latlng)
+                .setContent("Vous avez cliqué à l'emplacement : " + e.latlng.toString())
+                .openOn(map);
+        });
+    </script>
+</body>
+</html>
