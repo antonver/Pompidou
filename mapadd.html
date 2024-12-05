@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choisir l'emplacement d'une activité</title>
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        /* Donne une taille à la carte */
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        #info {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Créer une activité</h1>
+    <div id="map"></div>
+    <p id="info">Cliquez sur la carte pour choisir un emplacement.</p>
+    <form id="activityForm">
+        <label for="latitude">Latitude :</label>
+        <input type="text" id="latitude" name="latitude" readonly required><br><br>
+        <label for="longitude">Longitude :</label>
+        <input type="text" id="longitude" name="longitude" readonly required><br><br>
+        <button type="submit">Valider l'emplacement</button>
+    </form>
+
+    <script>
+        // Initialisation de la carte
+        const map = L.map('map').setView([48.8566, 2.3522], 13); // Paris, zoom 13
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+
+        // Variable pour stocker le marqueur
+        let marker;
+
+        // Écouter les clics sur la carte
+        map.on('click', function (e) {
+            const { lat, lng } = e.latlng;
+
+            // Ajouter ou déplacer le marqueur
+            if (marker) {
+                marker.setLatLng([lat, lng]); // Déplacer le marqueur existant
+            } else {
+                marker = L.marker([lat, lng]).addTo(map); // Créer un nouveau marqueur
+            }
+
+            // Mettre à jour les champs de formulaire
+            document.getElementById('latitude').value = lat.toFixed(6);
+            document.getElementById('longitude').value = lng.toFixed(6);
+
+            // Afficher un message d'information
+            document.getElementById('info').textContent = `Coordonnées choisies : Latitude ${lat.toFixed(6)}, Longitude ${lng.toFixed(6)}`;
+        });
+
+        // Gestionnaire de soumission du formulaire
+        document.getElementById('activityForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Empêche le rechargement de la page
+
+            const latitude = document.getElementById('latitude').value;
+            const longitude = document.getElementById('longitude').value;
+
+            if (!latitude || !longitude) {
+                alert('Veuillez choisir un emplacement sur la carte.');
+                return;
+            }
+
+            // Soumission des coordonnées (exemple : envoi vers une API)
+            console.log(`Emplacement validé : Latitude ${latitude}, Longitude ${longitude}`);
+            alert('L\'emplacement a été validé avec succès.');
+        });
+    </script>
+</body>
+</html>
