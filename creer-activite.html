@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Créer une activité</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+  <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;">
+</head>
+<body>
+<div class="container mt-5">
+  <h1 class="text-center mb-4">Créer une activité</h1>
+
+  <form id="createActivityForm" action="/creer_activite_form" method="post" class="shadow p-4 bg-light rounded">
+    <div class="mb-3">
+      <label for="mail" class="form-label">Mail de l'organisateur :</label>
+      <select id="mail" name="mail" class="form-select">
+        <option value="">-- Sélectionnez un email --</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="type" class="form-label">Type d'activité :</label>
+      <select id="type" name="type" class="form-select">
+        <option value="">-- Sélectionnez un type --</option>
+        <!-- Options dynamiques ajoutées ici -->
+      </select>
+    </div>
+
+
+    <div class="mb-3">
+      <label for="commune" class="form-label">Commune :</label>
+      <input type="text" id="commune" name="commune" class="form-control" placeholder="Ex : Paris" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="descriptif" class="form-label">Descriptif :</label>
+      <textarea id="descriptif" name="descriptif" class="form-control" placeholder="Description de l'activité" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="date" class="form-label">Date :</label>
+      <input type="date" id="date" name="date" class="form-control" placeholder="Sélectionnez une date" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Créer l'activité</button>
+  </form>
+  <p id="success"></p>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script defer src="/js/load_data_creer_activite.js"></script>
+</body>
+</html>
+

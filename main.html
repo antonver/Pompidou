@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recherche d'activités</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src='https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css' rel='stylesheet' />
+  <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;">
+</head>
+<body class="bg-light">
+<header class="bg-primary text-white text-center py-4 mb-5">
+  <h1>Recherche d'activités</h1>
+</header>
+
+<main class="container">
+  <!-- Formulaire de recherche -->
+  <section class="mb-5">
+    <form id="multiCriteriaSearchForm" method="post" action="/search/" class="p-4 border rounded shadow-sm bg-white">
+      <h4 class="mb-4 text-primary">Recherche Multicritères</h4>
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="dateDebut" class="form-label">Date début :</label>
+          <input type="date" id="dateDebut" name="debut" class="form-control" placeholder="Sélectionnez une date">
+        </div>
+        <div class="col-md-6">
+          <label for="dateFin" class="form-label">Date fin :</label>
+          <input type="date" id="dateFin" name="fin" class="form-control" placeholder="Sélectionnez une date">
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="type" class="form-label">Type d'activité :</label>
+        <select id="type" name="type" class="form-select">
+          <option value="">-- Choisissez un type --</option>
+          <!-- Ajouter d'autres types selon les besoins -->
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+    </form>
+  </section>
+
+  <!-- Boutons d'actions -->
+  <section class="mb-5 text-center">
+    <a href="/creer_activite" class="btn btn-success me-3">Créer une activité</a>
+    <a href="/creer_utilisateur" class="btn btn-info">Créer un utilisateur</a>
+  </section>
+
+  <!-- Tableau des activités -->
+  <section class="mb-5">
+    <h2 class="text-center text-primary mb-4">Liste des Activités</h2>
+    <div class="table-responsive">
+      <table id="activites-list" class="table table-striped table-hover table-bordered align-middle text-center">
+        <thead class="table-dark">
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Mail</th>
+          <th scope="col">Type</th>
+          <th scope="col">Commune</th>
+          <th scope="col">Description</th>
+          <th scope="col">Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Dynamically loaded rows -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Carte -->
+  <section class="mb-5">
+    <h2 class="text-center text-primary mb-4">Carte des Activités</h2>
+    <div id="map" style="height: 400px; border: 2px solid #ddd; border-radius: 5px;">
+
+    </div>
+  </section>
+</main>
+
+<footer class="bg-primary text-white text-center py-3">
+  <p>&copy; 2024 Recherche d'activités. Tous droits réservés.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="/js/load_data_recherche_activite.js"></script>
+<!-- Ajouter votre script pour la carte ici -->
+</body>
+</html>
