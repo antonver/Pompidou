@@ -54,23 +54,21 @@
   <!-- Tableau des activités -->
   <section class="mb-5">
     <h2 class="text-center text-primary mb-4">Liste des Activités</h2>
-    <div class="table-responsive">
-      <table id="activites-list" class="table table-striped table-hover table-bordered align-middle text-center">
-        <thead class="table-dark">
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Mail</th>
-          <th scope="col">Type</th>
-          <th scope="col">Commune</th>
-          <th scope="col">Description</th>
-          <th scope="col">Date</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- Dynamically loaded rows -->
-        </tbody>
-      </table>
-    </div>
+    <table class="table table-striped table-bordered">
+      <thead class="table-dark text-center">
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Mail</th>
+        <th scope="col">Type</th>
+        <th scope="col">Commune</th>
+        <th scope="col">Description</th>
+        <th scope="col">Date</th>
+      </tr>
+      </thead>
+      <tbody id="activities-tbody">
+      <!-- Les lignes des activités seront insérées ici -->
+      </tbody>
+    </table>
   </section>
 
   <!-- Carte -->
