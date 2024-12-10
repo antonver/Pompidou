@@ -19,21 +19,23 @@ async function loadData() {
         const data4 = await response4.json(); // Liste des mails des utilisateurs
 
         // Remplissage du dropdown pour les types d'activités
-        data3.forEach(item => {
+        for (let i = 0; i < data3.length; i++) {
+            const item = data3[i];
             const option = document.createElement('option'); // Création d'une option
             option.value = item.idTypeActivite; // Valeur de l'option
             option.textContent = item.typeActivite; // Texte visible
             type_.appendChild(option); // Ajout de l'option au dropdown
-        });
+        }
 
         // Remplissage du dropdown pour les mails des utilisateurs
         const mail = document.querySelector("#mail"); // Assurez-vous que cet élément existe dans le HTML
-        data4.forEach(item => {
+        for (let i = 0; i < data4.length; i++) {
+            const item = data4[i];
             const option = document.createElement('option'); // Création d'une option
             option.value = item.mail; // Valeur de l'option
             option.textContent = item.mail; // Texte visible
             mail.appendChild(option); // Ajout de l'option au dropdown
-        });
+        }
 
         // Gestionnaire d'événements pour le formulaire de création d'activités
         document.getElementById('createActivityForm').addEventListener('submit', async function (event) {
@@ -74,4 +76,3 @@ async function loadData() {
 
 // Exécution de la fonction loadData après que le DOM est complètement chargé
 document.addEventListener("DOMContentLoaded", loadData);
-loh
