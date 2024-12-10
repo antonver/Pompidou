@@ -74,3 +74,4 @@ async function loadData() {
 
 // Exécution de la fonction loadData après que le DOM est complètement chargé
 document.addEventListener("DOMContentLoaded", loadData);
+loh
