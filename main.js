@@ -1,17 +1,17 @@
 // Importation des modules nécessaires
-const express = require("express");
-const bodyParser = require("body-parser");
+const express = require("express"); // importe express Express.js framework web pour Node.js
 const mysql = require("mysql2");
 
-const app = express();
-const PORT = 3000;
+const app = express(); // sert a creer l'app express
+const PORT = 3000; // le port est configuré sur 3000
 
 // Middleware pour servir les fichiers statiques et gérer les données JSON/urlencoded
-app.use(express.static("public"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public")); // express configure les fichiers dans le dossier public en static, static ne change pas le code
+app.use(express.json()); // configure express pour qu'il puisse analyser le json
+app.use(express.urlencoded({ extended: true })); //permet au serveur de comprendre les requêtes HTTP contenant des données encodées dans l’URL
 
 // Configuration de la base de données
+// connexion à une base de données MySQL
 const connection = mysql.createConnection({
     host: "sql.freedb.tech",
     user: "freedb_antonver",
@@ -22,6 +22,8 @@ const connection = mysql.createConnection({
 });
 
 // Connexion à la base de données
+// call back est appellé une fois que la tentative de connexion est terminée
+// petit debug pour savoir si la base de donnée est connectée ou erreur
 connection.connect((error) => {
     if (error) {
         throw error;
@@ -30,18 +32,27 @@ connection.connect((error) => {
 });
 
 // Démarrage du serveur
+//demarre le serveur express et ecoute les requetes qui vont arriver
 app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);
 });
+// attend les connexions a partir d'un navigateur ou un autre client
 
 // Routes
 
 // Route principale
+// GET est une méthode HTTP utilisée lorsqu’un client (par exemple, un navigateur) demande des données ou une page.
+// req , res servent de callback = request et result
+//
 app.get("/", (req, res) => {
+    //res.senFile = methode qui envoie le fichier statique main.html
     res.sendFile(__dirname + "/main.html");
 });
 
+
+
 // Pages HTML spécifiques
+// pareil quand on va cliquer sur le bouton creer activite le app get va nous afficher la page creer-activite.html
 app.get("/creer_activite", (req, res) => {
     res.sendFile(__dirname + "/creer-activite.html");
 });
@@ -52,6 +63,7 @@ app.get("/creer_utilisateur", (req, res) => {
 
 // Routes pour les données
 // Obtenir toutes les activités avec leurs types associés
+//express renvoie le resultat du'une requete sql quand on demande data1
 app.get("/data1", (req, res) => {
     const query = `
         SELECT * 
@@ -59,8 +71,16 @@ app.get("/data1", (req, res) => {
         JOIN TypesActivite t 
         ON a.idTypeActivite = t.idTypeActivite;
     `;
+    // connexion . requete ( requete + call back une fois que la requete est terminé, affiche le resultat ou erreur)
+    //connection.query() = Exécute la requête SQL et appelle un callback avec les erreurs ou résultats.
+    // error	Gère les erreurs qui surviennent pendant l’exécution de la requête.
+    // results	Contient les données retournées par la base si la requête réussit.
+    //
     connection.query(query, (error, results) => {
+        // si erreur renvoie erreur
         if (error) throw error;
+        //sinon Envoie les données au client en format JSON.
+        //res.json(results)	Envoie les données au client en format JSON.
         res.json(results);
     });
 });
@@ -105,23 +125,29 @@ app.get("/data4", (req, res) => {
 });
 
 // Route POST pour la recherche dynamique d'activités
+// express.post permet d ' envoyer sur le serveur
+// req Contient toutes les informations sur la requête HTTP envoyée par le client
+// res Utilisé pour envoyer une réponse au client.
+// app.post("/search")	Crée une route POST pour recevoir les critères de recherche du client.
+
 app.post("/search", (req, res) => {
     const { debut, fin, type } = req.body;
 
     // Validation des paramètres
+    // il faut rentrer au moins une donnée pour faire fonctionner search
     if (!debut && !fin && !type) {
         return res.status(400).json({ error: "Au moins un paramètre est requis : 'debut', 'fin' ou 'type'." });
     }
 
-    // Construction dynamique de la requête
+    // Construction dynamique de la requête / s'adapte en fonction des données renseignés
     let query = `
         SELECT * 
         FROM Activites a 
         JOIN TypesActivite t 
         ON a.idTypeActivite = t.idTypeActivite 
-        WHERE 1=1
-    `;
-    const params = [];
+        WHERE 1=1 
+    `; // Cela garantit que la requête est toujours valide, même si aucun filtre n'est ajouté.
+    const params = []; // tableau destiné à stocker les valeurs des critères de recherche
 
     if (debut) {
         query += " AND a.date >= ?";
@@ -155,6 +181,8 @@ app.post("/search", (req, res) => {
 });
 
 // Route POST pour créer une activité
+// req Contient toutes les informations sur la requête HTTP envoyée par le client
+// res Utilisé pour envoyer une réponse au client.
 app.post("/creer_activite_form", (req, res) => {
     const { mail, type, commune, descriptif, date } = req.body;
 
