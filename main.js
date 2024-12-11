@@ -1,6 +1,5 @@
 // Importation des modules nécessaires
 const express = require("express");
-const bodyParser = require("body-parser");
 const mysql = require("mysql2");
 
 const app = express();
@@ -80,7 +79,7 @@ app.get("/data3", (req, res) => {
     connection.query(query, (error, results) => {
         if (error) {
             console.error("Erreur SQL :", error);
-            return res.status(500).json({ error: "Erreur interne du serveur", details: error.message });
+            return res.json({ error: "Erreur interne du serveur", details: error.message });
         }
         res.json(results);
     });
@@ -110,7 +109,7 @@ app.post("/search", (req, res) => {
 
     // Validation des paramètres
     if (!debut && !fin && !type) {
-        return res.status(400).json({ error: "Au moins un paramètre est requis : 'debut', 'fin' ou 'type'." });
+        return res.json({ error: "Au moins un paramètre est requis : 'debut', 'fin' ou 'type'." });
     }
 
     // Construction dynamique de la requête
@@ -148,7 +147,7 @@ app.post("/search", (req, res) => {
     connection.query(query, params, (error, results) => {
         if (error) {
             console.error("Erreur SQL :", error);
-            return res.status(500).json({ error: "Erreur lors de la recherche d'activités." });
+            return res.json({ error: "Erreur lors de la recherche d'activités." });
         }
         res.json(results);
     });
@@ -160,7 +159,7 @@ app.post("/creer_activite_form", (req, res) => {
 
     // Validation des paramètres
     if (!mail || !type || !commune || !descriptif || !date) {
-        return res.status(400).json({ error: "Tous les paramètres sont requis." });
+        return res.json({ error: "Tous les paramètres sont requis." });
     }
 
     // Requête pour insérer une activité
@@ -173,9 +172,10 @@ app.post("/creer_activite_form", (req, res) => {
     connection.query(query, params, (error, results) => {
         if (error) {
             console.error("Erreur SQL :", error);
-            return res.status(500).json({ error: "Erreur lors de la création de l'activité." });
+            return res.json({ error: "Erreur lors de la création de l'activité." });
         }
-        res.status(201).json({ message: "Activité créée avec succès", results });
+        res.json({ message: "Activité créée avec succès", results });
+        res.json({ message: "Activité créée avec succès", results });
     });
 });
 
@@ -185,7 +185,7 @@ app.post("/creer_utilisateur_form", (req, res) => {
 
     // Validation des paramètres
     if (!mail || !nom || !prenom || !telephone) {
-        return res.status(400).json({ error: "Tous les paramètres sont requis." });
+        return res.json({ error: "Tous les paramètres sont requis." });
     }
 
     // Requête pour insérer un utilisateur
@@ -198,8 +198,8 @@ app.post("/creer_utilisateur_form", (req, res) => {
     connection.query(query, params, (error, results) => {
         if (error) {
             console.error("Erreur SQL :", error);
-            return res.status(500).json({ error: "Erreur lors de la création de l'utilisateur." });
+            return res.json({ error: "Erreur lors de la création de l'utilisateur." });
         }
-        res.status(201).json({ message: "Utilisateur créé avec succès", results });
+        res.json({ message: "Utilisateur créé avec succès", results });
     });
 });

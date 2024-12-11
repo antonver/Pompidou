@@ -4,9 +4,8 @@ const type_ = document.querySelector("#type");
 
 // Fonction utilitaire pour reformater la date
 function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Exemple : "10 décembre 2024"
     const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', options); // Format en français
+    return date.toDateString(); // Format en français
 }
 
 
@@ -68,10 +67,10 @@ async function loadData() {
     // Gestionnaire d'événements pour la recherche multi-critères
     document.getElementById('multiCriteriaSearchForm').addEventListener('submit', async function (event) {
         event.preventDefault(); // Empêche la soumission par défaut
-
+        //fait référence à l'élément qui a déclenché l'événement, dans ce cas, le formulaire.
         const form = event.target;
-        const formData = new FormData(form);
-        const jsonData = Object.fromEntries(formData.entries());
+        const formData = new FormData(form); // Récupère les données du formulaire
+        const jsonData = Object.fromEntries(formData.entries()); // Convertit les données en JSON
 
         try {
             const response4 = await fetch('/search', {
@@ -121,14 +120,14 @@ async function loadData() {
     });
 
     // Fonction pour récupérer les coordonnées géographiques d'un lieu
-    async function getCoordinates(place, callback) {
+    async function getCoordinates(place) {
         try {
-            const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${place}.json?access_token=${mapboxgl.accessToken}`);
+            const response = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${place}&access_token=${mapboxgl.accessToken}`);
             const data = await response.json();
-            const coordinates = data.features[0].center;
-            callback(null, coordinates);
+            return data.features[0].geometry.coordinates;
+
         } catch (error) {
-            callback(error, null);
+            throw new Error("Erreur pendant le téléchargement des données");
         }
     }
 
@@ -144,11 +143,7 @@ async function loadData() {
 
         for (let i = 0; i < data5.length; i++) {
             const item = data5[i];
-            getCoordinates(item.commune, (error, coordinates) => {
-                if (error) {
-                    console.error("Erreur lors de la récupération des coordonnées :", error);
-                    return;
-                }
+            let coordinates = await getCoordinates(item.commune);
 
                 // Ajout d'un léger décalage pour éviter le chevauchement des marqueurs
                 offset += 0.001;
@@ -159,10 +154,8 @@ async function loadData() {
                     .setPopup(new mapboxgl.Popup({ offset: 25 })
                         .setText(item.descriptif))
                     .addTo(map);
-            });
-        }
-
-    } catch (error) {
+            };
+        } catch (error) {
         console.error("Erreur:", error);
     }
 }
