@@ -49,6 +49,10 @@ app.get("/creer_utilisateur", (req, res) => {
     res.sendFile(__dirname + "/creer-utilisateur.html");
 });
 
+app.get("/creer_type_activite", (req, res) => {
+    res.sendFile(__dirname + "/creer-type-activite.html");
+});
+
 // Routes pour les données
 // Obtenir toutes les activités avec leurs types associés
 app.get("/data1", (req, res) => {
@@ -105,12 +109,9 @@ app.get("/data4", (req, res) => {
 
 // Route POST pour la recherche dynamique d'activités
 app.post("/search", (req, res) => {
-    const { debut, fin, type } = req.body;
-
-    // Validation des paramètres
-    if (!debut && !fin && !type) {
-        return res.json({ error: "Au moins un paramètre est requis : 'debut', 'fin' ou 'type'." });
-    }
+    const { debut, fin, type, type_activite } = req.body;
+    console.log(type_activite);
+    console.log(req.body);
 
     // Construction dynamique de la requête
     let query = `
@@ -121,6 +122,15 @@ app.post("/search", (req, res) => {
         WHERE 1=1
     `;
     const params = [];
+
+    if (!debut && !fin && !type && !type_activite) {
+        query = `
+        SELECT * 
+        FROM Activites a 
+        JOIN TypesActivite t 
+        ON a.idTypeActivite = t.idTypeActivite
+    `;
+    }
 
     if (debut) {
         query += " AND a.date >= ?";
@@ -141,6 +151,15 @@ app.post("/search", (req, res) => {
             )
         `;
         params.push(type);
+    } else if (type_activite) {
+        query += `
+            AND a.idTypeActivite IN (
+                SELECT DISTINCT t2.idTypeActivite 
+                FROM TypesActivite t2 
+                WHERE t2.idTypeActivite = ?
+            )
+        `;
+        params.push(type_activite);
     }
 
     // Exécution de la requête SQL
@@ -175,7 +194,6 @@ app.post("/creer_activite_form", (req, res) => {
             return res.json({ error: "Erreur lors de la création de l'activité." });
         }
         res.json({ message: "Activité créée avec succès", results });
-        res.json({ message: "Activité créée avec succès", results });
     });
 });
 
@@ -201,5 +219,28 @@ app.post("/creer_utilisateur_form", (req, res) => {
             return res.json({ error: "Erreur lors de la création de l'utilisateur." });
         }
         res.json({ message: "Utilisateur créé avec succès", results });
+    });
+});
+
+app.post("/creer_type_activite_form", (req, res) => {
+    const { name_type, type } = req.body;
+    // Validation des paramètres
+    if (!name_type || !type) {
+        return res.json({ error: "Tous les paramètres sont requis." });
+    }
+
+    // Requête pour insérer une activité
+    const query = `
+        INSERT INTO TypesActivite (typeActivite, activiteGenerique)
+        VALUES (?, ?)
+    `;
+    const params = [name_type, type];
+
+    connection.query(query, params, (error, results) => {
+        if (error) {
+            console.error("Erreur SQL :", error);
+            return res.json({ error: "Erreur lors de la création de nouveau type activité." });
+        }
+        res.json({ message: "Nouveau typectivité créée avec succès", results });
     });
 });

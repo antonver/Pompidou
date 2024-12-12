@@ -1,6 +1,7 @@
 // Sélection des éléments HTML
 const activitesBody = document.querySelector("#activities-tbody");
 const type_ = document.querySelector("#type");
+const type_activite = document.querySelector("#type_activite");
 
 // Fonction utilitaire pour reformater la date
 function formatDate(dateString) {
@@ -55,9 +56,9 @@ async function loadData() {
         for (let i = 0; i < data3.length; i++) {
             const item = data3[i];
             const option = document.createElement('option');
-            option.value = item.typeActivite;
+            option.value = item.idTypeActivite;
             option.textContent = item.typeActivite;
-            type_.appendChild(option);
+            type_activite.appendChild(option);
         }
 
     } catch (error) {
